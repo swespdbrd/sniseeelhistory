@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snisel's Game History</title>
+<style>
+body {
+  font-family: "Montserrat", "Segoe UI", Tahoma, sans-serif;
+  background: #0e0e10;
+  color: #f0f0f0;
+  margin: 0;
+}
+
+header {
+  background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5kE8PGw2zUsXurJ0iFpOEtsS9x9EoWIUZAw&s") no-repeat center center;
+  background-size: cover;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-bar input,
+.sort-dropdown {
+  padding: 12px 15px;
+  border-radius: 30px;
+  border: none;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 0 10px rgba(145,70,255,0.5);
+}
+
+.search-bar input {
+  width: 100%;
+}
+
+.sort-dropdown { border-radius: 20px; }
+
+.letter-section {
+  padding: 20px 30px;
+}
+
+.letter-section h2 {
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+  color: #9146FF;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  justify-items: start;
+  justify-content: start;
+}
+
+.game-card {
+  background: #1f1f23;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 350px;
+  opacity: 1;
+}
+
+.game-card.hide {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+}
+
+.game-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(145,70,255,0.6);
+}
+
+.game-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.info {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.info h3 {
+  margin: 0 0 6px 0;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.info .developer {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin: -2px 0 6px 0;
+  line-height: 1.2;
+}
+
+.tags { margin: 5px 0; }
+.tag {
+  display: inline-block;
+  background: #9146FF;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+
+.date { 
+  font-size: 0.9rem; 
+  color: #aaa; 
+  margin: 4px 0; 
+  white-space: pre-line; 
+}
+
+.clips, .clips-link {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #9146FF;
+  margin: 4px 0;
+  text-decoration: none;
+}
+.clips-link:hover { color: #b77fff; }
+
+.suggestion-box {
+  background: linear-gradient(90deg, #772CE8, #9146FF);
+  color: #fff;
+  padding: 15px 20px;
+  margin: 30px auto;
+  text-align: center;
+  border-radius: 12px;
+  max-width: 700px;
+  font-size: 1rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.suggestion-box:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(145,70,255,0.6);
+}
+
+.suggestion-box a { 
+  color: #fff; 
+  font-weight: bold; 
+  text-decoration: underline; 
+}
+.suggestion-box a:hover { color: #b77fff; }
+
+.info-box {
+  background: linear-gradient(90deg, rgba(119,44,232,0.5), rgba(145,70,255,0.5));
+  color: #fff;
+  padding: 20px 25px;
+  margin: 20px auto 30px auto;
+  text-align: center;
+  border-radius: 12px;
+  max-width: 700px;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.info-box:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(145,70,255,0.6);
+}
+
+@media (max-width: 768px) {
+  header {
+    height: 150px;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+    padding: 0 10px;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 10px;
+  }
+
+  .search-bar input,
+  .sort-dropdown {
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  .letter-section {
+    padding: 15px 10px;
+  }
+
+  .letter-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .game-card img {
+    height: auto;
+  }
+
+  .info {
+    padding: 15px;
+  }
+
+  .info-box, .suggestion-box {
+    padding: 15px 10px;
+    font-size: 0.95rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎮 Snisel's Game History</h1>
+</header>
+
+<div class="controls">
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search for a game...">
+  </div>
+  <select id="sortSelect" class="sort-dropdown">
+    <option value="alphabetical">Sort: Alphabetical (standard)</option>
+    <option value="lastplayednew">Sort: Last played (Newest → Oldest)</option>
+    <option value="lastplayedold">Sort: Last played (Oldest → Newest)</option>
+    <option value="firstplayednew">Sort: First played (Newest → Oldest)</option>
+<option value="firstplayedold">Sort: First played (Oldest → Newest)</option>
+
+  </select>
+</div>
+
+<div class="info-box">
+  <h1 style="text-align: center; color: #7730e8; margin-top: 30px; font-size: 2.5rem;">
+  Welcome!
+</h1>
+  These are games that Snisel has played in the past and are (according to Snisel) unlikely to appear on stream again. But who knows? Maybe some will be played again someday. It has happened before.
+  <br><br>
+  The list is sorted alphabetically as standard and is not 100% complete. The earliest date recorded is June 2, 2022.  
+  <br><br>
+  The page is updated whenever time permits.
+  <br>
+  The dates shown in the list are primarily based on notifications sent out by the stream bot in the Discord server.
+  <br><br>
+  <i>Currently showcasing a total of <b>48</b> games in this list.</i>
+</div>
+
+<div id="library"></div>
+
+<div class="suggestion-box">
+  💡 Have a game suggestion for Snisel? Drop it in the <a href="https://discord.gg/REd6zddPBC" target="_blank">Discord server</a>!<br><br>
+  ✨ If there’s anything that needs to be changed, added, or removed, feel free to reach out to Speedbird on Discord.
+</div>
+
+<script>
+
+const games = [
+  {
+    name: "Minecraft",
+    developer: "Mojang Studios",
+    image: "https://e.snmc.io/lk/lv/x/0a366c7732559808539906b30ce0eaf5/11831072",
+    tags: ["Sandbox", "Survival", "Adventure", "Creative"],
+    start: null,
+    end: "2024-03-26",
+    clips: null
+  },
+  {
+    name: "Call of Duty: Black Ops III",
+    developer: "Treyarch",
+    image: "https://gamesbeat.com/wp-content/uploads/2025/05/BO3-Reveal.jpg",
+    tags: ["FPS", "Action", "Multiplayer", "Zombies"],
+    start: "2024-03-19",
+    end: "2025-05-10",
+    clips: null
+  },
+  {
+    name: "Alan Wake II",
+    developer: "Remedy Entertainment",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8L6hVzjWIjePF6L29dwD6VNNa3RBn9qQGpA&s",
+    tags: ["Action", "Horror", "Thriller", "Adventure"],
+    start: "2023-10-27",
+    end: "2023-11-12",
+    clips: null
+  },
+  {
+    name: "Avatar: Frontiers of Pandora",
+    developer: "Massive Entertainment – A Ubisoft Studio",
+    image: "https://www.massive.se/wp-content/uploads/2023/06/massive_afop_trailerthumbnail_1280x720_2-1200x720-jpg.webp",
+    tags: ["Action", "Adventure", "Open World", "Sci-Fi"],
+    start: "2023-12-07",
+    end: "2023-12-10",
+    clips: null
+  },
+  {
+    name: "Amnesia: The Bunker",
+    developer: "Frictional Games",
+    image: "https://images.gog-statics.com/ea3ddfee4360aa391562ad1fbb1d7ba83cdd47fe4dfd069b3f450deee568ddea.jpg",
+    tags: ["Horror", "Survival", "Adventure", "Thriller"],
+    start: "2023-06-28",
+    end: "2023-06-29",
+    clips: null
+  },
+  {
+    name: "BioShock Remastered",
+    developer: "2K Boston / Irrational Games",
+    image: "https://images.gog-statics.com/d7c53ae24dda92505d853037f2f67c13dba40ab1d05a39ebb6c45ac96dd516e1.jpg",
+    tags: ["FPS", "Horror", "Adventure", "Story-driven"],
+    start: "2023-12-21",
+    end: "2023-12-21",
+    clips: null
+  },
+  {
+    name: "Bloodborne",
+    developer: "FromSoftware",
+    image: "https://images.steamusercontent.com/ugc/244710630325034704/291095750288C120997B83819F4FE0F30C72DBEA/?imw=1024&imh=576&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
+    tags: ["Action", "RPG", "Horror", "Adventure"],
+    start: "2023-12-19",
+    end: "2023-12-19",
+    clips: null
+  },
+  {
+    name: "Cyberpunk 2077",
+    developer: "CD Projekt Red",
+    image: "https://specials-images.forbesimg.com/imageserve/61f695933c4524ba288b8f46/960x0.jpg",
+    tags: ["RPG", "Open World", "Action", "Sci-Fi"],
+    start: "2023-09-15",
+    end: "2023-09-17",
+    clips: null
+  },
+  {
+    name: "Dragon's Dogma II",
+    developer: "Capcom",
+    image: "https://cdn.wccftech.com/wp-content/uploads/2024/01/dragons-dogma-2-capcom-showcase-HD-1920x1096.jpg",
+    tags: ["RPG", "Action", "Open World", "Fantasy"],
+    start: "2024-03-28",
+    end: "2025-08-22",
+    clips: null
+  },
+  {
+    name: "Duck Season",
+    developer: "Stress Level Zero",
+    image: "https://hb.imgix.net/f4e551e97ee9d82566de9b0b3254cc8cb3c296ae.jpeg?auto=compress,format&fit=crop&h=353&w=616&s=b9f0fe7623743f4c1ba57bc0990a11ad",
+    tags: ["Horror", "VR", "Survival", "Adventure"],
+    start: null,
+    end: null,
+    clips: null
+  },
+  {
+    name: "Eastward",
+    developer: "Pixpil",
+    image: "https://cdn1.epicgames.com/salesEvent/salesEvent/EGS_Eastward_Pixpil_S1_2560x1440-e15d4bc27966c4c282d8809a87838a3a",
+    tags: ["Adventure", "RPG", "Pixel Art", "Story-driven"],
+    start: null,
+    end: "2023-04-20",
+    clips: null
+  },
+  {
+    name: "Elden Ring",
+    developer: "FromSoftware",
+    image: "https://image.api.playstation.com/vulcan/img/rnd/202111/0506/hcFeWRVGHYK72uOw6Mn6f4Ms.jpg",
+    tags: ["RPG", "Action", "Open World", "Fantasy"],
+    start: "2022-06-02",
+    end: "2025-01-04",
+    clips: null
+  },
+  {
+    name: "Flintlock: The Siege of Dawn",
+    developer: "A44 Games",
+    image: "https://www.rpgfan.com/wp-content/uploads/2022/03/Flintlock-The-Siege-of-Dawn-Artwork-006.webp",
+    tags: ["Action", "RPG", "Fantasy", "Co-op"],
+    start: "2022-06-02",
+    end: "2024-07-17",
+    clips: null
+  },
+  {
+    name: "Ghost of Tsushima",
+    developer: "Sucker Punch Productions",
+    image: "https://cdna.artstation.com/p/assets/images/images/029/304/380/large/mitch-mohrhauser-ghost-boxart-1.jpg?1597115430",
+    tags: ["Action", "Adventure", "Open World", "Samurai"],
+    start: "2023-11-16",
+    end: "2025-08-21",
+    clips: null
+  },
+  {
+    name: "God of War",
+    developer: "Santa Monica Studio",
+    image: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2021/09/god-of-war-ragnarok-key-art.jpg",
+    tags: ["Action", "Adventure", "Mythology", "RPG"],
+    start: "2023-07-27",
+    end: "2023-08-09",
+    clips: null
+  },
+  {
+    name: "Hellblade: Senua's Sacrifice",
+    developer: "Ninja Theory",
+    image: "https://images.gog-statics.com/e80ba57bd7909faed61f31d878ec28745c623fba541e10867ae82f7ffaf5c6e0.jpg",
+    tags: ["Action", "Adventure", "Psychological", "Mythology"],
+    start: "2023-04-07",
+    end: "2023-04-07",
+    clips: null
+  },
+  {
+    name: "HELLDIVERS 2",
+    developer: "Arrowhead Game Studios",
+    image: "https://thisgengaming.com/wp-content/uploads/2024/10/helldivers-2-feature-image.jpg.webp",
+    tags: ["Action", "Shooter", "Co-op", "Sci-Fi"],
+    start: "2024-02-29",
+    end: "2024-03-03",
+    clips: null
+  },
+  {
+    name: "Hogwarts Legacy",
+    developer: "Portkey Games",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Hogwarts_Legacy_promotional_photo_horizontal.jpg/1200px-Hogwarts_Legacy_promotional_photo_horizontal.jpg",
+    tags: ["Action", "RPG", "Fantasy", "Open World"],
+    start: "2023-02-07",
+    end: "2023-03-31",
+    clips: null
+  },
+  {
+    name: "Hollow Knight",
+    developer: "Team Cherry",
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/367520/capsule_616x353.jpg?t=1695270428",
+    tags: ["Action", "Metroidvania", "Platformer", "Indie"],
+    start: "2024-07-22",
+    end: "2024-07-24",
+    clips: null
+  },
+  {
+    name: "Horizon Zero Dawn",
+    developer: "Guerrilla Games",
+    image: "https://cdn.wccftech.com/wp-content/uploads/2024/09/horizon_zero_dawn_cover-HD-scaled.jpg",
+    tags: ["Action", "RPG", "Open World", "Adventure"],
+    start: "2023-12-26",
+    end: "2024-01-14",
+    clips: null
+  },
+  {
+    name: "Hunt: Showdown",
+    developer: "Crytek",
+    image: "https://gaming-cdn.com/images/products/2464/orig/hunt-showdown-pc-game-steam-cover.jpg?v=1704800359",
+    tags: ["Action", "Shooter", "Multiplayer", "Horror"],
+    start: "2024-05-08",
+    end: "2024-05-08",
+    clips: null
+  },
+  {
+    name: "LEGO Star Wars: The Skywalker Saga",
+    developer: "TT Games",
+    image: "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/04/LEGO-Star-Wars-The-Skywalker-Saga-Review-Cover.jpg",
+    tags: ["Action", "Adventure", "Family", "Comedy"],
+    start: null,
+    end: null,
+    clips: null
+  },
+  {
+    name: "Mafia: Definitive Edition",
+    developer: "Hangar 13",
+    image: "https://cdn.prgloo.com/media/39272f9707e84a5bbafbb7106ddc1168.png?width=968&height=1452",
+    tags: ["Action", "Adventure", "Crime", "Story-Driven"],
+    start: "2024-02-11",
+    end: "2024-02-25",
+    clips: null
+  },
+  {
+    name: "Marvel's Spider-Man",
+    developer: "Insomniac Games",
+    image: "https://image.api.playstation.com/vulcan/ap/rnd/202009/3021/QeJWAaLcYNOpCv7yCVZZEOY5.jpg",
+    tags: ["Action", "Adventure", "Open World", "Superhero"],
+    start: "2023-08-21",
+    end: "2023-09-04",
+    clips: null
+  },
+  {
+    name: "Marvel's Spider-Man 2",
+    developer: "Insomniac Games",
+    image: "https://rogallylife.com/wp-content/uploads/2025/01/Marvels-Spider-Man-2-rog-ally-game-settings.webp",
+    tags: ["Action", "Adventure", "Open World", "Superhero"],
+    start: "2023-10-20",
+    end: "2023-10-26",
+    clips: null
+  },
+  {
+    name: "Marvel's Spider-Man: Miles Morales",
+    developer: "Insomniac Games",
+    image: "https://gaming-cdn.com/images/products/12953/orig/marvel-s-spider-man-miles-morales-pc-game-steam-cover.jpg?v=1713944644",
+    tags: ["Action", "Adventure", "Open World", "Superhero"],
+    start: "2023-10-15",
+    end: "2023-10-18",
+    clips: null
+  },
+  {
+    name: "Once Human",
+    developer: "Starry Studio",
+    image: "https://gaming-cdn.com/images/products/15599/orig/once-human-pc-game-steam-cover.jpg?v=1720602609",
+    tags: ["Action", "Shooter", "Sci-Fi", "Multiplayer"],
+    start: "2023-12-30",
+    end: "2024-07-13",
+    clips: null
+  },
+  {
+    name: "Palworld",
+    developer: "Pocketpair",
+    image: "https://www.impericon.com/cdn/shop/articles/20240129_palworldgame_1.jpg?v=1712690924",
+    tags: ["Adventure", "Survival", "Open World", "Fantasy"],
+    start: "2024-02-06",
+    end: "2024-02-08",
+    clips: null
+  },
+  {
+    name: "Pokémon Scarlet/Violet",
+    developer: "Game Freak",
+    image: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2022/08/pokemon-scarlet-violet-covers.jpg?q=50&fit=crop&w=825&dpr=1.5",
+    tags: ["RPG", "Adventure", "Fantasy", "Open World"],
+    start: null,
+    end: "2022-11-18",
+    clips: null
+  },
+  {
+    name: "Red Dead Redemption 2",
+    developer: "Rockstar Games",
+    image: "https://cdn.rocketchainsaw.com.au/wp-content/uploads/2018/05/Red-Dead-Redemption-2-New-Logo.jpg",
+    tags: ["Action", "Adventure", "Open World", "Western"],
+    start: "2024-03-23",
+    end: "2025-01-23",
+    clips: null
+  },
+  {
+    name: "Resident Evil 2",
+    developer: "Capcom",
+    image: "https://m.media-amazon.com/images/I/71vgPG6gLiL._UF1000,1000_QL80_.jpg",
+    tags: ["Horror", "Survival", "Action", "Thriller"],
+    start: "2023-03-11",
+    end: "2024-10-04",
+    clips: null
+  },
+  {
+    name: "Resident Evil 4",
+    developer: "Capcom",
+    image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2050650/header.jpg?t=1736385712",
+    tags: ["Horror", "Survival", "Action", "Thriller"],
+    start: "2023-03-16",
+    end: "2023-10-13",
+    clips: null
+  },
+  {
+    name: "Resident Evil 7: Biohazard",
+    developer: "Capcom",
+    image: "https://i0.wp.com/afterstorygaming.com/wp-content/uploads/2017/01/halo-wars-2-1080p-wallpaper-5.jpg?fit=1200%2C675&ssl=1",
+    tags: ["Horror", "Survival", "Action", "Thriller"],
+    start: "2023-04-01",
+    end: "2023-04-09",
+    clips: null
+  },
+  {
+    name: "Sea of Thieves",
+    developer: "Rare",
+    image: "https://geekdad.com/wp-content/uploads/2018/02/Sea-of-Thieves.png",
+    tags: ["Adventure", "Multiplayer", "Pirates", "Open World"],
+    start: "2023-04-01",
+    end: "2023-04-01",
+    clips: null
+  },
+  {
+    name: "Senua's Saga: Hellblade II",
+    developer: "Ninja Theory",
+    image: "https://senuassaga.com/opengraph-image.png?5bc11765fd0129ec",
+    tags: ["Action", "Adventure", "Psychological", "Fantasy"],
+    start: "2024-05-21",
+    end: "2024-05-27",
+    clips: null
+  },
+  {
+    name: "Shadow of the Colossus",
+    developer: "Team Ico",
+    image: "https://thisgengaming.com/wp-content/uploads/2018/02/1-min-4.jpg",
+    tags: ["Action", "Adventure", "Puzzle", "Fantasy"],
+    start: "2023-09-05",
+    end: "2023-09-05",
+    clips: null
+  },
+  {
+    name: "Sons of the Forest",
+    developer: "Endnight Games",
+    image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1326470/capsule_616x353.jpg?t=1708624856",
+    tags: ["Horror", "Survival", "Open World", "Adventure"],
+    start: "2024-07-03",
+    end: "2024-07-03",
+    clips: null
+  },
+  {
+    name: "The Evil Within",
+    developer: "Tango Gameworks",
+    image: "https://i.ytimg.com/vi/p8iZA9gTvV8/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLB2JXHiX1YNU2swJ3JmqFNg2Z3rGw",
+    tags: ["Horror", "Survival", "Action", "Thriller"],
+    start: "2023-05-02",
+    end: "2023-05-03",
+    clips: null
+  },
+  {
+    name: "The Finals",
+    developer: "Embark Studios",
+    image: "https://cdn.alza.cz/Foto/ImgGalery/Image/the-finals-game-keyart.jpg",
+    tags: ["Shooter", "Multiplayer", "Action", "Competitive"],
+    start: "2023-12-10",
+    end: "2023-12-13",
+    clips: null
+  },
+  {
+    name: "The Last of Us Part I",
+    developer: "Naughty Dog",
+    image: "https://image.api.playstation.com/vulcan/ap/rnd/202206/0720/ca6Dr3k7PXKaDgEbhN9eODeD.png",
+    tags: ["Action", "Adventure", "Story-Driven", "Survival"],
+    start: "2024-01-15",
+    end: "2025-04-02",
+    clips: null
+  },
+  {
+    name: "The Last of Us Part II",
+    developer: "Naughty Dog",
+    image: "https://www.psbloggen.se/wp-content/uploads/2020/06/the-last-of-us-part-2-image1.jpg",
+    tags: ["Action", "Adventure", "Story-Driven", "Survival"],
+    start: "2024-01-19",
+    end: "2025-05-25",
+    clips: null
+  },
+  {
+    name: "The Legend of Zelda: Tears of the Kingdom",
+    developer: "Nintendo EPD",
+    image: "https://gaming-cdn.com/images/products/4860/616x353/the-legend-of-zelda-tears-of-the-kingdom-switch-game-nintendo-eshop-europe-cover.jpg?v=1748959308",
+    tags: ["Action", "Adventure", "Open World", "Fantasy"],
+    start: "2023-05-14",
+    end: "2023-06-17",
+    clips: null
+  },
+  {
+    name: "The Long Dark",
+    developer: "Hinterland Studio",
+    image: "https://www.nintendo.com/eu/media/images/10_share_images/games_15/nintendo_switch_download_software_1/H2x1_NSwitchDS_TheLongDark.jpg",
+    tags: ["Survival", "Adventure", "Simulation", "Open World"],
+    start: "2023-12-03",
+    end: "2024-07-16",
+    clips: null
+  },
+  {
+    name: "The Quarry",
+    developer: "Supermassive Games",
+    image: "https://www.relyonhorror.com/wp-content/uploads/2022/06/The-Quarry-Key-Art-4K.jpg",
+    tags: ["Horror", "Adventure", "Story-Driven", "Interactive"],
+    start: "2023-12-14",
+    end: "2023-12-16",
+    clips: null
+  },
+  {
+    name: "The Wolf Among Us",
+    developer: "Telltale Games",
+    image: "https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fwolf-among-us%2Fhome%2FEGS_LCGEntertainmentInc_TheWolfAmongUs_S1-2560x1440-20d0d307c8316a6f424ff083013c03a3b2bef390.jpg",
+    tags: ["Adventure", "Story-Driven", "Mystery", "Fantasy"],
+    start: "2023-04-18",
+    end: "2023-04-19",
+    clips: null
+  }
+];
+
+
+// ======= Dates =======
+function formatDate(dateStr, full = false) {
+  if (!dateStr || dateStr === 'N/A') return 'N/A';
+  const options = full
+    ? { year: 'numeric', month: 'long', day: 'numeric' }
+    : { year: 'numeric', month: 'short', day: 'numeric' };
+  return new Date(dateStr).toLocaleDateString('en-US', options);
+}
+
+// ======= Render cards =======
+const library = document.getElementById('library');
+
+// ======= Create cards =======
+function createGameCard(g) {
+  const card = document.createElement('div');
+  card.className = 'game-card';
+  card.dataset.name = g.name;
+
+  const firstPlayed = g.start && g.start !== 'N/A' ? formatDate(g.start) : 'N/A';
+  const lastPlayed = g.end && g.end !== 'N/A' ? formatDate(g.end) : 'N/A';
+  const dateDisplay = `📅 First played: ${firstPlayed}\n📅 Last played: ${lastPlayed}`;
+  const dateTooltip = `First played: ${firstPlayed}\nLast played: ${lastPlayed}`;
+
+card.innerHTML = `
+  <img src="${g.image}" alt="${g.name}">
+  <div class="info">
+    <h3>${g.name}</h3>
+    <p class="developer">${g.developer}</p>
+    <div class="tags">${g.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    <p class="date" title="${dateTooltip}">${dateDisplay}</p>
+    ${
+      g.clips
+        ? `<a href="${g.clips}" class="clips-link">🎥 Watch clips</a>`
+        : `<p class="clips">✨ Maybe clips will appear here later...</p>`
+    }
+  </div>
+`;
+
+  return card;
+}
+
+// ======= Render letter categories =======
+function renderGamesByLetter(gameArray) {
+  library.innerHTML = '';
+
+  const grouped = {};
+  gameArray.forEach(g => {
+    const letter = g.name[0].toUpperCase();
+    if (!grouped[letter]) grouped[letter] = [];
+    grouped[letter].push(g);
+  });
+
+  Object.keys(grouped).sort().forEach(letter => {
+    const section = document.createElement('div');
+    section.className = 'letter-section';
+    section.dataset.letter = letter;
+
+    const h2 = document.createElement('h2');
+    h2.textContent = letter;
+    section.appendChild(h2);
+
+    const container = document.createElement('div');
+    container.className = 'container';
+
+    grouped[letter].forEach(g => container.appendChild(createGameCard(g)));
+
+    section.appendChild(container);
+    library.appendChild(section);
+  });
+}
+
+// ======= Render flatlist =======
+function renderGamesFlat(gameArray) {
+  library.innerHTML = '';
+
+  const containerWrapper = document.createElement('div');
+  containerWrapper.style.padding = '0 30px';
+  containerWrapper.style.boxSizing = 'border-box';
+
+  const container = document.createElement('div');
+  container.className = 'container';
+
+  gameArray.forEach(g => container.appendChild(createGameCard(g)));
+  containerWrapper.appendChild(container);
+  library.appendChild(containerWrapper);
+}
+
+// ======= Sort =======
+function sortGames(mode) {
+  let sorted = [...games];
+
+  if (mode === 'alphabetical') {
+    sorted.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (mode === 'lastplayednew') {
+    sorted.sort((a, b) => {
+      const dateA = a.end && a.end !== 'N/A' ? a.end : a.start && a.start !== 'N/A' ? a.start : '1970-01-01';
+      const dateB = b.end && b.end !== 'N/A' ? b.end : b.start && b.start !== 'N/A' ? b.start : '1970-01-01';
+      return new Date(dateB) - new Date(dateA);
+    });
+  } else if (mode === 'lastplayedold') {
+    sorted.sort((a, b) => {
+      const dateA = a.end && a.end !== 'N/A' ? a.end : a.start && a.start !== 'N/A' ? a.start : '2100-01-01';
+      const dateB = b.end && b.end !== 'N/A' ? b.end : b.start && b.start !== 'N/A' ? b.start : '2100-01-01';
+      return new Date(dateA) - new Date(dateB);
+    });
+  } else if (mode === 'firstplayednew') {
+    sorted.sort((a, b) => {
+      const dateA = a.start && a.start !== 'N/A' ? a.start : '1970-01-01';
+      const dateB = b.start && b.start !== 'N/A' ? b.start : '1970-01-01';
+      return new Date(dateB) - new Date(dateA);
+    });
+  } else if (mode === 'firstplayedold') {
+    sorted.sort((a, b) => {
+      const dateA = a.start && a.start !== 'N/A' ? a.start : '2100-01-01';
+      const dateB = b.start && b.start !== 'N/A' ? b.start : '2100-01-01';
+      return new Date(dateA) - new Date(dateB);
+    });
+  }
+
+  return sorted;
+}
+
+
+// ======= Init =======
+renderGamesByLetter(sortGames('alphabetical'));
+
+// ======= Dropdown =======
+document.getElementById('sortSelect').addEventListener('change', e => {
+  const sorted = sortGames(e.target.value);
+  if (e.target.value === 'alphabetical') {
+    renderGamesByLetter(sorted);
+  } else {
+    renderGamesFlat(sorted);
+  }
+});
+
+// ======= Search =======
+document.getElementById('searchInput').addEventListener('keyup', e => {
+  const filter = e.target.value.toLowerCase();
+  const filtered = games.filter(g => g.name.toLowerCase().includes(filter));
+  const sorted = sortGames(document.getElementById('sortSelect').value).filter(g => filtered.includes(g));
+
+  if (document.getElementById('sortSelect').value === 'alphabetical') {
+    renderGamesByLetter(sorted);
+  } else {
+    renderGamesFlat(sorted);
+  }
+});
+
+</script>
+<footer id="lastUpdated" style="text-align: center; margin-top: 20px; margin-bottom: 20px; font-size: 0.9rem; color: #aaa;">
+  Last updated: August 22, 2025<br>
+  Created by SwedishSpeedbird – for Sniseeel<br>
+  <a href="https://twitch.tv/sniseeel" target="_blank" style="color: #9146FF; text-decoration: underline;">Sniseeel Twitch Channel</a>
+</footer>
+</body>
+</html>
