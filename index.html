@@ -78,16 +78,23 @@ header h1 {
 }
 
 .game-card {
-  background: #1f1f23;
-  border-radius: 16px;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(119, 48, 232, 0.7), 0 0 30px rgba(119, 48, 232, 0.5);
   overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-  transition: transform 0.3s, box-shadow 0.3s, opacity 0.3s;
+  transition: box-shadow 0.3s, transform 0.3s;
   display: flex;
   flex-direction: column;
+}
+
+.game-card img {
   width: 100%;
-  max-width: 350px;
-  opacity: 1;
+  height: auto;
+}
+
+.game-card .info {
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .game-card.hide {
@@ -854,5 +861,9 @@ document.getElementById('searchInput').addEventListener('keyup', e => {
   Created by SwedishSpeedbird – for Sniseeel<br>
   <a href="https://twitch.tv/sniseeel" target="_blank" style="color: #9146FF; text-decoration: underline;">Sniseeel Twitch Channel</a>
 </footer>
+  <div id="lightbox">
+  <img src="" alt="Stort spelbild">
+</div>
+
 </body>
 </html>
