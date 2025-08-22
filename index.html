@@ -36,25 +36,31 @@ header h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 800px;
+  max-width: 950px;
   margin: 20px auto;
-  padding: 0 20px;
+  padding: 15px 25px;
+  gap: 15px;
   flex-wrap: wrap;
-  gap: 10px;
+  border-radius: 12px;
+  background: #1f1f23;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
 
 .search-bar input,
 .sort-dropdown {
-  padding: 12px 15px;
+  padding: 10px 15px;
   border-radius: 30px;
   border: none;
   font-size: 1rem;
   outline: none;
   box-shadow: 0 0 10px rgba(145,70,255,0.5);
+  background: #2b2b30;
+  color: #fff;
 }
 
-.search-bar input {
-  width: 100%;
+.sort-dropdown { 
+  border-radius: 20px; 
+  cursor: pointer;
 }
 
 .sort-dropdown { border-radius: 20px; }
@@ -177,27 +183,61 @@ header h1 {
   box-shadow: 0 8px 30px rgba(145,70,255,0.6);
 }
 
+.suggestion-box {
+  background: #1f1f23;                  /* matchar info-box och controls */
+  color: #f0f0f0;
+  padding: 20px 30px;
+  margin: 30px auto;
+  text-align: center;
+  border-radius: 12px;                  /* rundade hörn */
+  max-width: 700px;
+  font-size: 1rem;
+  box-shadow: 
+    0 6px 20px rgba(0,0,0,0.4),        /* standard shadow */
+    0 0 10px rgba(145,70,255,0.5),      /* lila glow */
+    0 0 20px rgba(145,70,255,0.3);      /* extra glow */
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.suggestion-box:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 8px 30px rgba(145,70,255,0.6),
+    0 0 15px rgba(145,70,255,0.5),
+    0 0 30px rgba(145,70,255,0.3);
+}
+
 .suggestion-box a { 
   color: #fff; 
   font-weight: bold; 
   text-decoration: underline; 
 }
-.suggestion-box a:hover { color: #b77fff; }
+
+.suggestion-box a:hover { 
+  color: #b77fff; 
+}
 
 .info-box {
-  background: linear-gradient(90deg, rgba(119,44,232,0.5), rgba(145,70,255,0.5));
-  color: #fff;
-  padding: 20px 25px;
+  background: #1f1f23;
+  color: #f0f0f0;
+  padding: 20px 30px;
   margin: 20px auto 30px auto;
   text-align: center;
   border-radius: 12px;
   max-width: 700px;
   font-size: 1rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  box-shadow: 
+    0 6px 20px rgba(0,0,0,0.4),
+    0 0 10px rgba(145,70,255,0.5),
+    0 0 20px rgba(145,70,255,0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
+
 .info-box:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 8px 30px rgba(145,70,255,0.6);
+  box-shadow: 
+    0 8px 30px rgba(145,70,255,0.6),
+    0 0 15px rgba(145,70,255,0.5),
+    0 0 30px rgba(145,70,255,0.3);
 }
 
 @media (max-width: 768px) {
@@ -256,35 +296,41 @@ header h1 {
   <h1>🎮 Snisel's Game History</h1>
 </header>
 
-<div class="controls">
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search for a game...">
+<div class="controls-bar">
+  <div class="controls">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search for a game...">
+    </div>
+    <select id="sortSelect" class="sort-dropdown">
+      <option value="alphabetical">Sort: Alphabetical (standard)</option>
+      <option value="lastplayednew">Sort: Last played (Newest → Oldest)</option>
+      <option value="lastplayedold">Sort: Last played (Oldest → Newest)</option>
+      <option value="firstplayednew">Sort: First played (Newest → Oldest)</option>
+      <option value="firstplayedold">Sort: First played (Oldest → Newest)</option>
+    </select>
   </div>
-  <select id="sortSelect" class="sort-dropdown">
-    <option value="alphabetical">Sort: Alphabetical (standard)</option>
-    <option value="lastplayednew">Sort: Last played (Newest → Oldest)</option>
-    <option value="lastplayedold">Sort: Last played (Oldest → Newest)</option>
-    <option value="firstplayednew">Sort: First played (Newest → Oldest)</option>
-<option value="firstplayedold">Sort: First played (Oldest → Newest)</option>
-
-  </select>
 </div>
 
 <div class="info-box">
   <h1 style="text-align: center; color: #7730e8; margin-top: 30px; font-size: 2.5rem;">
-  Welcome!
-</h1>
-  These are games that Snisel has played in the past and are (according to Snisel) unlikely to appear on stream again. But who knows? Maybe some will be played again someday. It has happened before.
-  <br><br>
-  The list is sorted alphabetically as standard and is not 100% complete. The earliest date recorded is June 2, 2022.  
-  <br><br>
-  The page is updated whenever time permits.
-  <br>
-  The dates shown in the list are primarily based on notifications sent out by the stream bot in the Discord server.
-  <br><br>
-  <i>Currently showcasing a total of <b>48</b> games in this list.</i>
+    Welcome!
+  </h1>
+  <div id="infoText" style="display: none;">
+    This page showcases games that Snisel has played in the past — and most likely won’t appear on stream again.  
+    But hey, never say never… <i>Looking at you, TLoU.</i> 👀
+    <br><br>
+    By default, the list is sorted alphabetically. It’s not 100% complete; the earliest entry is from June 2, 2022, so plenty of older games are missing.  
+    <br><br>
+    Updates happen whenever time permits, and the dates shown are mainly based on Discord stream bot notifications.  
+    <br><br>
+    <i>Currently showcasing a total of <b>48</b> games.</i>
+  </div>
+  <button id="toggleInfo" style="margin-top: 15px; padding: 8px 16px; border: none; border-radius: 8px; background: #7730e8; color: #fff; font-weight: bold; cursor: pointer;">
+    Read me
+  </button>
 </div>
 
+  
 <div id="library"></div>
 
 <div class="suggestion-box">
@@ -851,10 +897,21 @@ document.getElementById('searchInput').addEventListener('keyup', e => {
     renderGamesFlat(sorted);
   }
 });
+  const toggleBtn = document.getElementById("toggleInfo");
+  const infoText = document.getElementById("infoText");
 
+  toggleBtn.addEventListener("click", () => {
+    if (infoText.style.display === "none") {
+      infoText.style.display = "block";
+      toggleBtn.textContent = "Show less";
+    } else {
+      infoText.style.display = "none";
+      toggleBtn.textContent = "Read me";
+    }
+  });
 </script>
 <footer id="lastUpdated" style="text-align: center; margin-top: 20px; margin-bottom: 20px; font-size: 0.9rem; color: #aaa;">
-  Last updated: August 22, 2025<br>
+  Last updated: August 23, 2025<br>
   Created by SwedishSpeedbird – for Sniseeel<br>
   <a href="https://twitch.tv/sniseeel" target="_blank" style="color: #9146FF; text-decoration: underline;">Sniseeel Twitch Channel</a>
 </footer>
